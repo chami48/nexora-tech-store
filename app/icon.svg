@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="NEXORA">
+  <rect width="64" height="64" rx="14" fill="#0B0F19" />
+  <path
+    d="M17 46V18h7.2l15.6 18.4V18H47v28h-7.2L24.2 27.6V46H17Z"
+    fill="#F8FAFC"
+  />
+  <path d="M18 50h28" stroke="#38BDF8" stroke-width="4" stroke-linecap="round" />
+</svg>
