@@ -121,7 +121,8 @@ export function ProductSpotlight() {
           className="
             grid
             items-center
-            gap-12
+            gap-6
+            sm:gap-12
             lg:grid-cols-[0.88fr_1.12fr]
             lg:gap-8
           "
@@ -325,7 +326,8 @@ export function ProductSpotlight() {
               relative
               mx-auto
               flex
-              aspect-[1.45/1]
+              aspect-[16/9]
+              sm:aspect-[1.45/1]
               w-full
               max-w-[620px]
               items-center
@@ -399,8 +401,8 @@ export function ProductSpotlight() {
               className="
     relative
     z-10
-    h-[330px]
-    w-[115%]
+    h-full
+    w-full
     sm:h-[390px]
     sm:w-[120%]
     lg:h-[470px]
@@ -442,6 +444,7 @@ export function ProductSpotlight() {
                 aria-hidden="true"
                 className="
       pointer-events-none
+      hidden sm:block
       absolute
       inset-y-[-10%]
       left-[-3%]
@@ -457,6 +460,7 @@ export function ProductSpotlight() {
                 aria-hidden="true"
                 className="
       pointer-events-none
+      hidden sm:block
       absolute
       inset-y-[-10%]
       right-[-3%]
@@ -472,6 +476,7 @@ export function ProductSpotlight() {
                 aria-hidden="true"
                 className="
       pointer-events-none
+      hidden sm:block
       absolute
       inset-x-[-5%]
       top-[-5%]
@@ -487,6 +492,7 @@ export function ProductSpotlight() {
                 aria-hidden="true"
                 className="
       pointer-events-none
+      hidden sm:block
       absolute
       inset-x-[-5%]
       bottom-[-5%]

@@ -87,10 +87,10 @@ export function Hero() {
           nexora-container
           relative
           grid
-          min-h-[720px]
           items-center
-          gap-12
-          py-14
+          gap-6
+          py-8
+          sm:gap-12
           sm:py-16
           lg:min-h-[calc(100vh-72px)]
           lg:grid-cols-[0.88fr_1.12fr]
@@ -289,7 +289,8 @@ export function Hero() {
               ease: [0.22, 1, 0.36, 1],
             }}
             className="
-              mt-10
+              mt-6
+              sm:mt-10
               flex
               flex-wrap
               gap-x-6
@@ -417,8 +418,9 @@ export function Hero() {
             className="
               relative
               z-10
-              aspect-[1.28/1]
-              w-[108%]
+              aspect-[16/9]
+              w-full
+              sm:aspect-[1.28/1]
               sm:w-[112%]
               lg:w-[118%]
               xl:w-[124%]
