@@ -15,6 +15,8 @@ export interface ProductVariant {
   label: string;
   value: string;
   available?: boolean;
+  price?: number;
+  specifications?: Record<string, string>;
 }
 
 export interface Product {

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
-import { Menu, Search, ShoppingBag, UserRound } from "lucide-react";
+import { ArrowUp, Menu, ShoppingBag, UserRound } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { MobileMenu } from "@/components/layout/mobile-menu";
@@ -10,6 +10,8 @@ import { categories } from "@/data/categories";
 import { products } from "@/data/products";
 import { useCart } from "@/components/cart/cart-provider";
 import { ThemeToggle } from "./theme-toggle";
+import { ProductSearch } from "./product-search";
+import { useCompare } from "@/components/compare/compare-provider";
 
 const navigation = [
   {
@@ -40,11 +42,13 @@ const navigation = [
 
 export function Navbar() {
   const { count, openCart } = useCart();
+  const { ids: comparedIds } = useCompare();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const activeCategory = searchParams.get("category");
 
   const [scrolled, setScrolled] = useState(false);
+  const [showBackToTop, setShowBackToTop] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
 
@@ -54,6 +58,7 @@ export function Navbar() {
       window.cancelAnimationFrame(frame);
       frame = window.requestAnimationFrame(() => {
         setScrolled(window.scrollY > 24);
+        setShowBackToTop(window.scrollY > 400);
       });
     };
 
@@ -103,7 +108,7 @@ export function Navbar() {
 
             {/* Logo */}
             <Link
-              href="/"
+              href="/#top"
               aria-label="NEXORA home"
               className={`
                 ${scrolled ? "text-[14px] sm:text-[17px]" : "text-[16px] sm:text-[20px]"}
@@ -222,20 +227,7 @@ export function Navbar() {
             {/* Actions */}
             <div className="flex items-center gap-1">
               <ThemeToggle />
-              <button
-                type="button"
-                aria-label="Search"
-                className="
-                  flex size-10 items-center justify-center
-                  rounded-full
-                  text-[#1D1D1F]
-                  transition-all duration-300
-                  hover:bg-black/[0.04]
-                  active:scale-95
-                "
-              >
-                <Search size={18} strokeWidth={1.8} />
-              </button>
+              <ProductSearch />
 
               <button
                 type="button"
@@ -300,6 +292,19 @@ export function Navbar() {
         open={mobileMenuOpen}
         onClose={() => setMobileMenuOpen(false)}
       />
+      <button
+        type="button"
+        aria-label="Back to top"
+        title="Back to top"
+        tabIndex={showBackToTop ? 0 : -1}
+        onClick={() => window.scrollTo({
+          top: 0,
+          behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
+        })}
+        className={`fixed ${comparedIds.length ? "bottom-52 lg:bottom-36" : "bottom-6"} right-5 z-30 flex size-10 items-center justify-center rounded-full border border-black/[0.08] bg-white/95 text-[#1D1D1F] shadow-lg backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 focus-visible:outline-2 focus-visible:outline-offset-4 motion-reduce:transition-none sm:right-8 ${showBackToTop ? "visible translate-y-0 opacity-100" : "invisible pointer-events-none translate-y-2 opacity-0"}`}
+      >
+        <ArrowUp size={18} strokeWidth={1.8} />
+      </button>
     </>
   );
 }

@@ -9,6 +9,8 @@ import { useState } from "react";
 import type { Product } from "@/types/product";
 import { ProductQuickView } from "./product-quick-view";
 import { useCart } from "@/components/cart/cart-provider";
+import { useWishlist } from "@/components/wishlist/wishlist-provider";
+import { CompareButton } from "@/components/compare/compare-button";
 
 interface ProductCardProps {
   product: Product;
@@ -24,7 +26,8 @@ function formatPrice(price: number) {
 
 export function ProductCard({ product }: ProductCardProps) {
   const { addToCart } = useCart();
-  const [isWishlisted, setIsWishlisted] = useState(false);
+  const { ids, toggle } = useWishlist();
+  const isWishlisted = ids.includes(product.id);
   const [quickViewOpen, setQuickViewOpen] = useState(false);
   const shouldReduceMotion = useReducedMotion();
 
@@ -124,7 +127,7 @@ export function ProductCard({ product }: ProductCardProps) {
           onClick={(event) => {
             event.preventDefault();
             event.stopPropagation();
-            setIsWishlisted((current) => !current);
+            toggle(product.id);
           }}
           className="
             absolute
@@ -158,6 +161,7 @@ export function ProductCard({ product }: ProductCardProps) {
         {/* ===================================================
             PRODUCT LINK + IMAGE
         ==================================================== */}
+        <CompareButton productId={product.id} name={product.name} className="absolute bottom-[30px] left-1/2 z-40 -translate-x-1/2" />
         <button
           type="button"
           onClick={() => setQuickViewOpen(true)}

@@ -89,7 +89,7 @@ export function NewArrivals() {
           </div>
 
           <Link
-            href="/shop"
+            href="/shop?newArrival=true"
             className="
               group
               inline-flex

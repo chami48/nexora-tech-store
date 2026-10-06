@@ -3,13 +3,16 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { createContext, useContext, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
+import { createContext, useContext, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { ArrowRight, Minus, Plus, ShoppingBag, Trash2, X } from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
 import { products } from "@/data/products";
 import type { Product } from "@/types/product";
+import { getProductPrice } from "@/lib/product-options";
+import { useOverlay } from "@/components/layout/use-overlay";
+import { parseCartItems as parseItems } from "@/lib/cart-items";
+import type { CartItem } from "@/lib/cart-items";
 
-type CartItem = { key: string; productId: string; quantity: number; color?: string; storage?: string };
 type Options = { color?: string; storage?: string };
 const storageKey = "nexora-cart-v1";
 const listeners = new Set<() => void>();
@@ -27,17 +30,6 @@ function subscribe(listener: () => void) {
   listeners.add(listener);
   window.addEventListener("storage", listener);
   return () => { listeners.delete(listener); window.removeEventListener("storage", listener); };
-}
-
-function parseItems(raw: string): CartItem[] {
-  try {
-    const parsed: unknown = JSON.parse(raw);
-    if (!Array.isArray(parsed)) return [];
-    return parsed.filter((item): item is CartItem => {
-      if (!item || typeof item !== "object") return false;
-      return typeof item.key === "string" && typeof item.productId === "string" && Number.isInteger(item.quantity) && item.quantity > 0 && item.quantity <= 99 && products.some((product) => product.id === item.productId);
-    });
-  } catch { return []; }
 }
 
 function writeItems(items: CartItem[]) {
@@ -61,6 +53,7 @@ type CartContextValue = {
   buyNow: (product: Product, options?: Options) => void;
   updateQuantity: (key: string, quantity: number) => void;
   removeItem: (key: string) => void;
+  clearCart: () => void;
 };
 const CartContext = createContext<CartContextValue | null>(null);
 const subscribeHydration = () => () => {};
@@ -81,16 +74,19 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useState(false);
   const router = useRouter();
   const count = items.reduce((sum, item) => sum + item.quantity, 0);
-  const subtotal = items.reduce((sum, item) => sum + products.find((product) => product.id === item.productId)!.price * item.quantity, 0);
+  const subtotal = items.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0);
 
   function add(product: Product, options?: Options) {
     if (!product.inStock) return false;
     const color = options?.color ?? product.colors?.find((variant) => variant.available !== false)?.value;
     const storage = options?.storage ?? product.storage?.find((variant) => variant.available !== false)?.value;
+    if (product.colors?.length && !product.colors.some((variant) => variant.value === color && variant.available !== false)) return false;
+    if (product.storage?.length && !product.storage.some((variant) => variant.value === storage && variant.available !== false)) return false;
+    const unitPrice = getProductPrice(product, storage);
     const key = JSON.stringify([product.id, color, storage]);
     const current = parseItems(readSnapshot());
     const existing = current.find((item) => item.key === key);
-    writeItems(existing ? current.map((item) => item.key === key ? { ...item, quantity: Math.min(99, item.quantity + 1) } : item) : [...current, { key, productId: product.id, quantity: 1, color, storage }]);
+    writeItems(existing ? current.map((item) => item.key === key ? { ...item, unitPrice, quantity: Math.min(99, item.quantity + 1) } : item) : [...current, { key, productId: product.id, quantity: 1, unitPrice, color, storage }]);
     return true;
   }
 
@@ -101,6 +97,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     buyNow: (product, options) => { if (add(product, options)) { setOpen(false); router.push("/checkout"); } },
     updateQuantity: (key, quantity) => { if (Number.isInteger(quantity) && quantity >= 1 && quantity <= 99) writeItems(parseItems(readSnapshot()).map((item) => item.key === key ? { ...item, quantity } : item)); },
     removeItem: (key) => writeItems(parseItems(readSnapshot()).filter((item) => item.key !== key)),
+    clearCart: () => writeItems([]),
   };
 
   return <CartContext.Provider value={value}>{children}{open && <CartDrawer onClose={() => setOpen(false)} />}</CartContext.Provider>;
@@ -113,7 +110,7 @@ export function CartLines() {
     const variants = [product.colors?.find((variant) => variant.value === item.color)?.label, product.storage?.find((variant) => variant.value === item.storage)?.label].filter(Boolean).join(" / ");
     return <div key={item.key} className="flex gap-4 py-6">
       <div className="relative size-24 shrink-0 rounded-lg bg-[#F5F5F7]"><Image src={product.image} alt={product.name} fill sizes="96px" className="object-contain p-2" /></div>
-      <div className="min-w-0 flex-1"><p className="text-xs text-[#86868B]">{product.brand}</p><p className="mt-1 text-sm font-semibold">{product.name}</p>{variants && <p className="mt-1 text-xs text-[#6E6E73]">{variants}</p>}<p className="mt-2 text-sm font-medium">{formatCartPrice(product.price * item.quantity)}</p>
+      <div className="min-w-0 flex-1"><p className="text-xs text-[#86868B]">{product.brand}</p><p className="mt-1 text-sm font-semibold">{product.name}</p>{variants && <p className="mt-1 text-xs text-[#6E6E73]">{variants}</p>}<p className="mt-2 text-sm font-medium">{formatCartPrice(item.unitPrice * item.quantity)}</p>
         <div className="mt-3 flex items-center justify-between gap-3"><div className="flex h-9 items-center rounded-full border border-black/10"><button type="button" aria-label={`Decrease ${product.name} quantity`} disabled={item.quantity === 1} onClick={() => updateQuantity(item.key, item.quantity - 1)} className="flex size-9 items-center justify-center disabled:opacity-30"><Minus size={14} /></button><span className="w-6 text-center text-sm" aria-live="polite">{item.quantity}</span><button type="button" aria-label={`Increase ${product.name} quantity`} disabled={item.quantity === 99} onClick={() => updateQuantity(item.key, item.quantity + 1)} className="flex size-9 items-center justify-center disabled:opacity-30"><Plus size={14} /></button></div><button type="button" aria-label={`Remove ${product.name}`} onClick={() => removeItem(item.key)} className="flex size-9 items-center justify-center text-[#86868B] hover:text-red-600"><Trash2 size={16} /></button></div>
       </div>
     </div>;
@@ -124,13 +121,7 @@ function CartDrawer({ onClose }: { onClose: () => void }) {
   const { count, subtotal, addToCart } = useCart();
   const dialogRef = useRef<HTMLDialogElement>(null);
   const reduceMotion = useReducedMotion();
-  useEffect(() => {
-    const dialog = dialogRef.current;
-    const overflow = document.body.style.overflow;
-    dialog?.showModal();
-    document.body.style.overflow = "hidden";
-    return () => { dialog?.close(); document.body.style.overflow = overflow; };
-  }, []);
+  useOverlay(dialogRef, true, onClose);
   return <dialog ref={dialogRef} aria-label="Shopping bag" onCancel={onClose} onClick={(event) => { if (event.target === event.currentTarget) onClose(); }} className="fixed inset-y-0 left-auto right-0 m-0 h-dvh max-h-none w-full max-w-[480px] overflow-hidden bg-white p-0 text-[#1D1D1F] shadow-2xl backdrop:bg-black/30 backdrop:backdrop-blur-sm">
     <motion.div initial={reduceMotion ? false : { x: "100%" }} animate={{ x: 0 }} transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }} className="flex h-full flex-col">
       <div className="flex shrink-0 items-center justify-between border-b border-black/[0.07] px-6 py-5"><div><h2 className="text-xl font-semibold">Your bag <span className="ml-2 text-sm font-normal text-[#86868B]">({count})</span></h2><p className="mt-1 text-xs text-[#86868B]">Thoughtfully selected. Ready for you.</p></div><button type="button" autoFocus aria-label="Close shopping bag" onClick={onClose} className="flex size-10 items-center justify-center rounded-full hover:bg-[#F5F5F7]"><X size={20} /></button></div>

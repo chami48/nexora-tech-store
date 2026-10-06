@@ -1,22 +1,33 @@
 "use client";
 
-import { Star, Check } from "lucide-react";
+import { Star, Check, Heart } from "lucide-react";
 import { useState } from "react";
 import type { Product } from "@/types/product";
 import { useCart } from "@/components/cart/cart-provider";
+import { useWishlist } from "@/components/wishlist/wishlist-provider";
+import { getProductPrice, getProductSpecifications } from "@/lib/product-options";
+import { CompareButton } from "@/components/compare/compare-button";
 
 export function ProductInfo({ product, onPurchase }: { product: Product; onPurchase?: () => void }) {
   const { addToCart, buyNow } = useCart();
-  const [color, setColor] = useState(product.colors?.[0]?.value);
-  const [storage, setStorage] = useState(product.storage?.[0]?.value);
+  const [color, setColor] = useState(product.colors?.find((variant) => variant.available !== false)?.value);
+  const [storage, setStorage] = useState(product.storage?.find((variant) => variant.available !== false)?.value);
+  const { ids, toggle } = useWishlist();
+  const price = getProductPrice(product, storage);
+  const specifications = getProductSpecifications(product, storage);
+  const unavailable = !product.inStock || (Boolean(product.storage?.length) && !storage) || (Boolean(product.colors?.length) && !color);
 
   return (
     <div className="min-w-0 space-y-6 text-[#1D1D1F]">
       <div>
         <p className="text-sm text-[#6E6E73]">{product.brand}</p>
         <h1 className="mt-2 text-3xl font-semibold leading-tight sm:text-4xl">{product.name}</h1>
-        <p className="mt-3 text-xl font-semibold">{new Intl.NumberFormat("en-LK", { style: "currency", currency: "LKR", maximumFractionDigits: 0 }).format(product.price)}</p>
-        {product.originalPrice && product.originalPrice > product.price && <p className="mt-1 text-sm text-[#86868B] line-through">LKR {product.originalPrice.toLocaleString("en-LK")}</p>}
+        <p aria-live="polite" className="mt-3 text-xl font-semibold">{new Intl.NumberFormat("en-LK", { style: "currency", currency: "LKR", maximumFractionDigits: 0 }).format(price)}</p>
+        {product.originalPrice && product.originalPrice > price && <p className="mt-1 text-sm text-[#86868B] line-through">LKR {product.originalPrice.toLocaleString("en-LK")}</p>}
+        <div className="mt-3 flex items-center gap-3">
+          <button type="button" title="Wishlist" aria-label={`${ids.includes(product.id) ? "Remove" : "Add"} ${product.name} ${ids.includes(product.id) ? "from" : "to"} wishlist`} aria-pressed={ids.includes(product.id)} onClick={() => toggle(product.id)} className="flex size-10 items-center justify-center rounded-full border border-black/10"><Heart size={18} className={ids.includes(product.id) ? "fill-[#1D1D1F]" : ""} /></button>
+          <CompareButton productId={product.id} name={product.name} />
+        </div>
         <p className="mt-3 flex items-center gap-2 text-sm text-[#6E6E73]"><Star size={15} /> {product.rating.toFixed(1)} ({product.reviewCount} reviews)</p>
       </div>
       <p className="leading-7 text-[#6E6E73]">{product.description}</p>
@@ -38,8 +49,8 @@ export function ProductInfo({ product, onPurchase }: { product: Product; onPurch
         </fieldset>
       ) : null}
       <div className="grid gap-3">
-        <button type="button" disabled={!product.inStock} onClick={() => { onPurchase?.(); addToCart(product, { color, storage }); }} className="h-12 rounded-full bg-[#1D1D1F] px-5 text-sm font-semibold text-white hover:bg-black disabled:cursor-not-allowed disabled:opacity-40">Add to cart</button>
-        <button type="button" disabled={!product.inStock} onClick={() => { onPurchase?.(); buyNow(product, { color, storage }); }} className="h-12 rounded-full border border-[#1D1D1F] px-5 text-sm font-semibold hover:bg-[#F5F5F7] disabled:cursor-not-allowed disabled:opacity-40">Buy now</button>
+        <button type="button" disabled={unavailable} onClick={() => { onPurchase?.(); addToCart(product, { color, storage }); }} className="h-12 rounded-full bg-[#1D1D1F] px-5 text-sm font-semibold text-white hover:bg-black disabled:cursor-not-allowed disabled:opacity-40">Add to cart</button>
+        <button type="button" disabled={unavailable} onClick={() => { onPurchase?.(); buyNow(product, { color, storage }); }} className="h-12 rounded-full border border-[#1D1D1F] px-5 text-sm font-semibold hover:bg-[#F5F5F7] disabled:cursor-not-allowed disabled:opacity-40">Buy now</button>
       </div>
       {product.longDescription?.length ? (
         <section className="space-y-4 border-t border-black/10 pt-6">
@@ -54,7 +65,7 @@ export function ProductInfo({ product, onPurchase }: { product: Product; onPurch
       </div>
       <div className="border-t border-black/10 pt-6">
         <h2 className="mb-3 text-lg font-semibold">Specifications</h2>
-        <dl>{Object.entries(product.specifications).map(([label, value]) => <div key={label} className="grid grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)] gap-4 border-b border-black/[0.06] py-3 text-sm"><dt className="text-[#6E6E73]">{label}</dt><dd>{value}</dd></div>)}</dl>
+        <dl>{Object.entries(specifications).map(([label, value]) => <div key={label} className="grid grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)] gap-4 border-b border-black/[0.06] py-3 text-sm"><dt className="text-[#6E6E73]">{label}</dt><dd>{value}</dd></div>)}</dl>
       </div>
     </div>
   );

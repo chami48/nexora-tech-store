@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { Search, SlidersHorizontal, X, PackageSearch } from "lucide-react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
@@ -8,6 +8,7 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { ProductGrid } from "@/components/product/product-grid";
 import { products } from "@/data/products";
 import type { ProductCategory } from "@/types/product";
+import { useOverlay } from "@/components/layout/use-overlay";
 
 type SortOption = "featured" | "price-low" | "price-high" | "rating" | "newest";
 
@@ -46,6 +47,7 @@ export function ShopContent() {
   const shouldReduceMotion = useReducedMotion();
 
   const categoryFromUrl = searchParams.get("category");
+  const newArrivalFromUrl = searchParams.get("newArrival") === "true";
 
   const [search, setSearch] = useState("");
 
@@ -55,43 +57,27 @@ export function ShopContent() {
 
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [inStockOnly, setInStockOnly] = useState(false);
+  const [newArrivalsOnly, setNewArrivalsOnly] = useState(newArrivalFromUrl);
 
   const [sort, setSort] = useState<SortOption>("featured");
 
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
-  /*
-   * Keep the shop filter in sync when somebody enters from:
-   *
-   * /shop?category=laptops
-   * /shop?category=phones
-   * etc.
-   */
-  // useEffect(() => {
-  //   if (isProductCategory(categoryFromUrl)) {
-  //     setSelectedCategories([categoryFromUrl]);
-  //   } else {
-  //     setSelectedCategories([]);
-  //   }
-  // }, [categoryFromUrl]);
+  const [previousCategoryFromUrl, setPreviousCategoryFromUrl] = useState(categoryFromUrl);
+  const [previousNewArrivalFromUrl, setPreviousNewArrivalFromUrl] = useState(newArrivalFromUrl);
 
-  /*
-   * Prevent background scrolling while the mobile
-   * filter drawer is open.
-   */
-  useEffect(() => {
-    if (!mobileFiltersOpen) {
-      return;
-    }
+  // Apply navigation changes before rendering the grid, without an effect delay.
+  if (categoryFromUrl !== previousCategoryFromUrl) {
+    setPreviousCategoryFromUrl(categoryFromUrl);
+    setSelectedCategories(isProductCategory(categoryFromUrl) ? [categoryFromUrl] : []);
+  }
+  if (newArrivalFromUrl !== previousNewArrivalFromUrl) {
+    setPreviousNewArrivalFromUrl(newArrivalFromUrl);
+    setNewArrivalsOnly(newArrivalFromUrl);
+  }
 
-    const previousOverflow = document.body.style.overflow;
-
-    document.body.style.overflow = "hidden";
-
-    return () => {
-      document.body.style.overflow = previousOverflow;
-    };
-  }, [mobileFiltersOpen]);
+  const filterRef = useRef<HTMLElement>(null);
+  useOverlay(filterRef, mobileFiltersOpen, () => setMobileFiltersOpen(false));
 
   /*
    * Generate brands directly from product data.
@@ -156,9 +142,10 @@ export function ShopContent() {
         selectedBrands.length === 0 || selectedBrands.includes(product.brand);
 
       const matchesAvailability = !inStockOnly || product.inStock;
+      const matchesArrival = !newArrivalsOnly || product.newArrival === true;
 
       return (
-        matchesSearch && matchesCategory && matchesBrand && matchesAvailability
+        matchesSearch && matchesCategory && matchesBrand && matchesAvailability && matchesArrival
       );
     });
 
@@ -174,17 +161,17 @@ export function ShopContent() {
           return b.rating - a.rating;
 
         case "newest":
-          return Number(b.newArrival) - Number(a.newArrival);
+          return (b.newArrival ? 1 : 0) - (a.newArrival ? 1 : 0);
 
         case "featured":
         default:
-          return Number(b.featured) - Number(a.featured);
+          return (b.featured ? 1 : 0) - (a.featured ? 1 : 0);
       }
     });
-  }, [search, selectedCategories, selectedBrands, inStockOnly, sort]);
+  }, [search, selectedCategories, selectedBrands, inStockOnly, newArrivalsOnly, sort]);
 
   const activeFilterCount =
-    selectedCategories.length + selectedBrands.length + (inStockOnly ? 1 : 0);
+    selectedCategories.length + selectedBrands.length + (inStockOnly ? 1 : 0) + (newArrivalsOnly ? 1 : 0);
 
   function toggleCategory(category: ProductCategory) {
     setSelectedCategories((current) =>
@@ -207,6 +194,7 @@ export function ShopContent() {
     setSelectedCategories([]);
     setSelectedBrands([]);
     setInStockOnly(false);
+    setNewArrivalsOnly(false);
     setSort("featured");
   }
 
@@ -244,12 +232,20 @@ export function ShopContent() {
 
       {/* AVAILABILITY */}
       <FilterSection title="Availability">
+        <div className="space-y-3">
+        <FilterCheckbox
+          label="New arrivals"
+          count={products.filter((product) => product.newArrival).length}
+          checked={newArrivalsOnly}
+          onChange={() => setNewArrivalsOnly((current) => !current)}
+        />
         <FilterCheckbox
           label="In stock only"
           count={products.filter((product) => product.inStock).length}
           checked={inStockOnly}
           onChange={() => setInStockOnly((current) => !current)}
         />
+        </div>
       </FilterSection>
 
       {/* RESET */}
@@ -545,7 +541,7 @@ export function ShopContent() {
                 {/* ACTIVE FILTERS */}
                 {(selectedCategories.length > 0 ||
                   selectedBrands.length > 0 ||
-                  inStockOnly) && (
+                  inStockOnly || newArrivalsOnly) && (
                   <div
                     className="
                       mb-8
@@ -574,6 +570,7 @@ export function ShopContent() {
                       />
                     ))}
 
+                    {newArrivalsOnly && <ActiveFilter label="New arrivals" onRemove={() => setNewArrivalsOnly(false)} />}
                     {inStockOnly && (
                       <ActiveFilter
                         label="In stock"
@@ -625,6 +622,11 @@ export function ShopContent() {
             />
 
             <motion.aside
+              ref={filterRef}
+              role="dialog"
+              aria-modal="true"
+              aria-label="Product filters"
+              tabIndex={-1}
               initial={
                 shouldReduceMotion
                   ? false

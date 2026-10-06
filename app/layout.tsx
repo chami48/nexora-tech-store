@@ -5,6 +5,8 @@ import "./globals.css";
 import { Footer } from "@/components/layout/footer";
 import { Navbar } from "@/components/layout/navbar";
 import { CartProvider } from "@/components/cart/cart-provider";
+import { WishlistProvider } from "@/components/wishlist/wishlist-provider";
+import { CompareProvider } from "@/components/compare/compare-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -96,8 +98,10 @@ export default function RootLayout({
       <head>
         <script dangerouslySetInnerHTML={{ __html: `(function(){var t=null;try{t=localStorage.getItem('nexora-theme')}catch(e){}var d=t==='dark'||(t!=='light'&&matchMedia('(prefers-color-scheme: dark)').matches);document.documentElement.classList.toggle('dark',d);document.documentElement.style.colorScheme=d?'dark':'light'})()` }} />
       </head>
-      <body className="flex min-h-full flex-col antialiased">
+      <body id="top" className="flex min-h-full flex-col antialiased">
         <CartProvider>
+        <WishlistProvider>
+        <CompareProvider>
         <Suspense fallback={null}>
           <Navbar />
         </Suspense>
@@ -105,6 +109,8 @@ export default function RootLayout({
         <div className="flex-1">{children}</div>
 
         <Footer />
+        </CompareProvider>
+        </WishlistProvider>
         </CartProvider>
       </body>
     </html>

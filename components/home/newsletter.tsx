@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, Check } from "lucide-react";
+import { ArrowRight, Info } from "lucide-react";
 import { FormEvent, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 
@@ -101,8 +101,8 @@ export function Newsletter() {
               sm:text-base
             "
           >
-            Get product launches, curated picks and NEXORA updates without the
-            noise.
+            Newsletter signup is not connected yet. This demo validates your
+            email but does not subscribe you or store it.
           </p>
 
           {!submitted ? (
@@ -160,7 +160,7 @@ export function Newsletter() {
 
                 <button
                   type="submit"
-                  aria-label="Subscribe to newsletter"
+                  aria-label="Check email address (demo only)"
                   className="
                     group
                     flex
@@ -210,6 +210,7 @@ export function Newsletter() {
             </form>
           ) : (
             <motion.div
+              role="status"
               initial={
                 shouldReduceMotion
                   ? false
@@ -252,21 +253,11 @@ export function Newsletter() {
                   text-white
                 "
               >
-                <Check size={13} strokeWidth={2} />
+                <Info size={13} strokeWidth={2} />
               </span>
-              You&apos;re on the list.
+              Signup is unavailable. Your email was not saved or subscribed.
             </motion.div>
           )}
-
-          <p
-            className="
-              mt-3
-              text-[11px]
-              text-[#86868B]
-            "
-          >
-            No spam. Just thoughtfully selected technology.
-          </p>
         </motion.div>
       </div>
     </section>

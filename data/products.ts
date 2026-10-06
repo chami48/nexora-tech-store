@@ -33,9 +33,9 @@ export const products: Product[] = [
       { label: "Midnight", value: "#2E3642" },
     ],
     storage: [
-      { label: "256GB", value: "256gb" },
-      { label: "512GB", value: "512gb" },
-      { label: "1TB", value: "1tb" },
+      { label: "256GB", value: "256gb", price: 399900, specifications: { Storage: "256GB SSD" } },
+      { label: "512GB", value: "512gb", price: 459900, specifications: { Storage: "512GB SSD" } },
+      { label: "1TB", value: "1tb", price: 519900, specifications: { Storage: "1TB SSD" } },
     ],
     features: [
       "Apple M4 chip",
@@ -233,6 +233,357 @@ export const products: Product[] = [
       Charging: "Wireless / USB-C",
       Connectivity: "Bluetooth",
     },
+  },
+
+  // Sample catalog entries with matching gallery assets from DummyJSON.
+  {
+    "id": "apple-macbook-pro-14-inch-space-grey",
+    "slug": "apple-macbook-pro-14-inch-space-grey",
+    "name": "MacBook Pro 14-inch M1 Pro",
+    "brand": "Apple",
+    "category": "laptops",
+    "tagline": "A portable workspace for creative projects.",
+    "description": "A 14-inch MacBook Pro option for people looking for a compact Apple notebook for work and creative projects. Sample catalog listing; price and availability are illustrative.",
+    "longDescription": [
+      "A 14-inch MacBook Pro option for people looking for a compact Apple notebook for work and creative projects.",
+      "This is a sample catalog entry, not a confirmed offer. Confirm the exact model, condition, configuration, accessories, warranty and availability with NEXORA before ordering. The displayed LKR price is for demonstration only."
+    ],
+    "price": 489900,
+    "rating": 0,
+    "reviewCount": 0,
+    "image": "/images/products/apple-macbook-pro-14-inch-space-grey-1.webp",
+    "gallery": [
+      "/images/products/apple-macbook-pro-14-inch-space-grey-1.webp",
+      "/images/products/apple-macbook-pro-14-inch-space-grey-2.webp",
+      "/images/products/apple-macbook-pro-14-inch-space-grey-3.webp"
+    ],
+    "inStock": true,
+    "featured": false,
+    "features": [
+      "Multiple product views",
+      "Contact NEXORA for configuration"
+    ],
+    "specifications": {
+      "Brand": "Apple",
+      "Model": "MacBook Pro 14-inch M1 Pro",
+      "Listing status": "Sample catalog entry",
+      "Price status": "Illustrative LKR price"
+    }
+  },
+
+  {
+    "id": "asus-zenbook-pro-dual-screen-laptop",
+    "slug": "asus-zenbook-pro-dual-screen-laptop",
+    "name": "Zenbook Pro Duo",
+    "brand": "ASUS",
+    "category": "laptops",
+    "tagline": "More room for your workflow.",
+    "description": "A dual-screen Zenbook option for keeping reference material and everyday applications within reach. Sample catalog listing; price and availability are illustrative.",
+    "longDescription": [
+      "A dual-screen Zenbook option for keeping reference material and everyday applications within reach.",
+      "This is a sample catalog entry, not a confirmed offer. Confirm the exact model, condition, configuration, accessories, warranty and availability with NEXORA before ordering. The displayed LKR price is for demonstration only."
+    ],
+    "price": 459900,
+    "rating": 0,
+    "reviewCount": 0,
+    "image": "/images/products/asus-zenbook-pro-dual-screen-laptop-1.webp",
+    "gallery": [
+      "/images/products/asus-zenbook-pro-dual-screen-laptop-1.webp",
+      "/images/products/asus-zenbook-pro-dual-screen-laptop-2.webp",
+      "/images/products/asus-zenbook-pro-dual-screen-laptop-3.webp"
+    ],
+    "inStock": true,
+    "featured": false,
+    "features": [
+      "Multiple product views",
+      "Contact NEXORA for configuration"
+    ],
+    "specifications": {
+      "Brand": "ASUS",
+      "Model": "Zenbook Pro Duo",
+      "Listing status": "Sample catalog entry",
+      "Price status": "Illustrative LKR price"
+    }
+  },
+
+  {
+    "id": "huawei-matebook-x-pro",
+    "slug": "huawei-matebook-x-pro",
+    "name": "MateBook X Pro",
+    "brand": "Huawei",
+    "category": "laptops",
+    "tagline": "Work wherever inspiration takes you.",
+    "description": "A MateBook X Pro notebook option for a portable work setup and everyday productivity. Sample catalog listing; price and availability are illustrative.",
+    "longDescription": [
+      "A MateBook X Pro notebook option for a portable work setup and everyday productivity.",
+      "This is a sample catalog entry, not a confirmed offer. Confirm the exact model, condition, configuration, accessories, warranty and availability with NEXORA before ordering. The displayed LKR price is for demonstration only."
+    ],
+    "price": 329900,
+    "rating": 0,
+    "reviewCount": 0,
+    "image": "/images/products/huawei-matebook-x-pro-1.webp",
+    "gallery": [
+      "/images/products/huawei-matebook-x-pro-1.webp",
+      "/images/products/huawei-matebook-x-pro-2.webp",
+      "/images/products/huawei-matebook-x-pro-3.webp"
+    ],
+    "inStock": true,
+    "featured": false,
+    "features": [
+      "Multiple product views",
+      "Contact NEXORA for configuration"
+    ],
+    "specifications": {
+      "Brand": "Huawei",
+      "Model": "MateBook X Pro",
+      "Listing status": "Sample catalog entry",
+      "Price status": "Illustrative LKR price"
+    }
+  },
+
+  {
+    "id": "lenovo-yoga-920",
+    "slug": "lenovo-yoga-920",
+    "name": "Yoga 920",
+    "brand": "Lenovo",
+    "category": "laptops",
+    "tagline": "A flexible approach to everyday work.",
+    "description": "A convertible Yoga notebook option for switching between typing, viewing and touch-oriented tasks. Sample catalog listing; price and availability are illustrative.",
+    "longDescription": [
+      "A convertible Yoga notebook option for switching between typing, viewing and touch-oriented tasks.",
+      "This is a sample catalog entry, not a confirmed offer. Confirm the exact model, condition, configuration, accessories, warranty and availability with NEXORA before ordering. The displayed LKR price is for demonstration only."
+    ],
+    "price": 219900,
+    "rating": 0,
+    "reviewCount": 0,
+    "image": "/images/products/lenovo-yoga-920-1.webp",
+    "gallery": [
+      "/images/products/lenovo-yoga-920-1.webp",
+      "/images/products/lenovo-yoga-920-2.webp",
+      "/images/products/lenovo-yoga-920-3.webp"
+    ],
+    "inStock": true,
+    "featured": false,
+    "features": [
+      "Multiple product views",
+      "Contact NEXORA for configuration"
+    ],
+    "specifications": {
+      "Brand": "Lenovo",
+      "Model": "Yoga 920",
+      "Listing status": "Sample catalog entry",
+      "Price status": "Illustrative LKR price"
+    }
+  },
+
+  {
+    "id": "new-dell-xps-13-9300-laptop",
+    "slug": "new-dell-xps-13-9300-laptop",
+    "name": "XPS 13 9300",
+    "brand": "Dell",
+    "category": "laptops",
+    "tagline": "A compact companion for busy days.",
+    "description": "An XPS 13 notebook option for people who prefer a compact laptop for everyday work and travel. Sample catalog listing; price and availability are illustrative.",
+    "longDescription": [
+      "An XPS 13 notebook option for people who prefer a compact laptop for everyday work and travel.",
+      "This is a sample catalog entry, not a confirmed offer. Confirm the exact model, condition, configuration, accessories, warranty and availability with NEXORA before ordering. The displayed LKR price is for demonstration only."
+    ],
+    "price": 299900,
+    "rating": 0,
+    "reviewCount": 0,
+    "image": "/images/products/new-dell-xps-13-9300-laptop-1.webp",
+    "gallery": [
+      "/images/products/new-dell-xps-13-9300-laptop-1.webp",
+      "/images/products/new-dell-xps-13-9300-laptop-2.webp",
+      "/images/products/new-dell-xps-13-9300-laptop-3.webp"
+    ],
+    "inStock": true,
+    "featured": false,
+    "features": [
+      "Multiple product views",
+      "Contact NEXORA for configuration"
+    ],
+    "specifications": {
+      "Brand": "Dell",
+      "Model": "XPS 13 9300",
+      "Listing status": "Sample catalog entry",
+      "Price status": "Illustrative LKR price"
+    }
+  },
+
+  {
+    "id": "iphone-13-pro",
+    "slug": "iphone-13-pro",
+    "name": "iPhone 13 Pro",
+    "brand": "Apple",
+    "category": "phones",
+    "tagline": "An everyday connection to your world.",
+    "description": "An iPhone 13 Pro option for communication, photography and familiar Apple applications. Sample catalog listing; price and availability are illustrative.",
+    "longDescription": [
+      "An iPhone 13 Pro option for communication, photography and familiar Apple applications.",
+      "This is a sample catalog entry, not a confirmed offer. Confirm the exact model, condition, configuration, accessories, warranty and availability with NEXORA before ordering. The displayed LKR price is for demonstration only."
+    ],
+    "price": 239900,
+    "rating": 0,
+    "reviewCount": 0,
+    "image": "/images/products/iphone-13-pro-1.webp",
+    "gallery": [
+      "/images/products/iphone-13-pro-1.webp",
+      "/images/products/iphone-13-pro-2.webp",
+      "/images/products/iphone-13-pro-3.webp"
+    ],
+    "inStock": true,
+    "featured": false,
+    "features": [
+      "Multiple product views",
+      "Contact NEXORA for configuration"
+    ],
+    "specifications": {
+      "Brand": "Apple",
+      "Model": "iPhone 13 Pro",
+      "Listing status": "Sample catalog entry",
+      "Price status": "Illustrative LKR price"
+    }
+  },
+
+  {
+    "id": "oppo-f19-pro-plus",
+    "slug": "oppo-f19-pro-plus",
+    "name": "F19 Pro+",
+    "brand": "OPPO",
+    "category": "phones",
+    "tagline": "Stay connected throughout your day.",
+    "description": "An OPPO F19 Pro+ smartphone option for everyday messaging, photography and entertainment. Sample catalog listing; price and availability are illustrative.",
+    "longDescription": [
+      "An OPPO F19 Pro+ smartphone option for everyday messaging, photography and entertainment.",
+      "This is a sample catalog entry, not a confirmed offer. Confirm the exact model, condition, configuration, accessories, warranty and availability with NEXORA before ordering. The displayed LKR price is for demonstration only."
+    ],
+    "price": 99900,
+    "rating": 0,
+    "reviewCount": 0,
+    "image": "/images/products/oppo-f19-pro-plus-1.webp",
+    "gallery": [
+      "/images/products/oppo-f19-pro-plus-1.webp",
+      "/images/products/oppo-f19-pro-plus-2.webp",
+      "/images/products/oppo-f19-pro-plus-3.webp"
+    ],
+    "inStock": true,
+    "featured": false,
+    "features": [
+      "Multiple product views",
+      "Contact NEXORA for configuration"
+    ],
+    "specifications": {
+      "Brand": "OPPO",
+      "Model": "F19 Pro+",
+      "Listing status": "Sample catalog entry",
+      "Price status": "Illustrative LKR price"
+    }
+  },
+
+  {
+    "id": "realme-c35",
+    "slug": "realme-c35",
+    "name": "C35",
+    "brand": "Realme",
+    "category": "phones",
+    "tagline": "Everyday essentials in your pocket.",
+    "description": "A Realme C35 smartphone option for calls, messaging and everyday mobile applications. Sample catalog listing; price and availability are illustrative.",
+    "longDescription": [
+      "A Realme C35 smartphone option for calls, messaging and everyday mobile applications.",
+      "This is a sample catalog entry, not a confirmed offer. Confirm the exact model, condition, configuration, accessories, warranty and availability with NEXORA before ordering. The displayed LKR price is for demonstration only."
+    ],
+    "price": 54900,
+    "rating": 0,
+    "reviewCount": 0,
+    "image": "/images/products/realme-c35-1.webp",
+    "gallery": [
+      "/images/products/realme-c35-1.webp",
+      "/images/products/realme-c35-2.webp",
+      "/images/products/realme-c35-3.webp"
+    ],
+    "inStock": true,
+    "featured": false,
+    "features": [
+      "Multiple product views",
+      "Contact NEXORA for configuration"
+    ],
+    "specifications": {
+      "Brand": "Realme",
+      "Model": "C35",
+      "Listing status": "Sample catalog entry",
+      "Price status": "Illustrative LKR price"
+    }
+  },
+
+  {
+    "id": "samsung-galaxy-s10",
+    "slug": "samsung-galaxy-s10",
+    "name": "Galaxy S10",
+    "brand": "Samsung",
+    "category": "phones",
+    "tagline": "A familiar Galaxy experience.",
+    "description": "A Galaxy S10 smartphone option for people looking for Samsung applications and everyday mobile connectivity. Sample catalog listing; price and availability are illustrative.",
+    "longDescription": [
+      "A Galaxy S10 smartphone option for people looking for Samsung applications and everyday mobile connectivity.",
+      "This is a sample catalog entry, not a confirmed offer. Confirm the exact model, condition, configuration, accessories, warranty and availability with NEXORA before ordering. The displayed LKR price is for demonstration only."
+    ],
+    "price": 89900,
+    "rating": 0,
+    "reviewCount": 0,
+    "image": "/images/products/samsung-galaxy-s10-1.webp",
+    "gallery": [
+      "/images/products/samsung-galaxy-s10-1.webp",
+      "/images/products/samsung-galaxy-s10-2.webp",
+      "/images/products/samsung-galaxy-s10-3.webp"
+    ],
+    "inStock": true,
+    "featured": false,
+    "features": [
+      "Multiple product views",
+      "Contact NEXORA for configuration"
+    ],
+    "specifications": {
+      "Brand": "Samsung",
+      "Model": "Galaxy S10",
+      "Listing status": "Sample catalog entry",
+      "Price status": "Illustrative LKR price"
+    }
+  },
+
+  {
+    "id": "vivo-x21",
+    "slug": "vivo-x21",
+    "name": "X21",
+    "brand": "Vivo",
+    "category": "phones",
+    "tagline": "Keep your everyday moments close.",
+    "description": "A Vivo X21 smartphone option for communication, mobile photography and everyday entertainment. Sample catalog listing; price and availability are illustrative.",
+    "longDescription": [
+      "A Vivo X21 smartphone option for communication, mobile photography and everyday entertainment.",
+      "This is a sample catalog entry, not a confirmed offer. Confirm the exact model, condition, configuration, accessories, warranty and availability with NEXORA before ordering. The displayed LKR price is for demonstration only."
+    ],
+    "price": 69900,
+    "rating": 0,
+    "reviewCount": 0,
+    "image": "/images/products/vivo-x21-1.webp",
+    "gallery": [
+      "/images/products/vivo-x21-1.webp",
+      "/images/products/vivo-x21-2.webp",
+      "/images/products/vivo-x21-3.webp"
+    ],
+    "inStock": true,
+    "featured": false,
+    "features": [
+      "Multiple product views",
+      "Contact NEXORA for configuration"
+    ],
+    "specifications": {
+      "Brand": "Vivo",
+      "Model": "X21",
+      "Listing status": "Sample catalog entry",
+      "Price status": "Illustrative LKR price"
+    }
   },
 ];
 

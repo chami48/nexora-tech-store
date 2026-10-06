@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { ArrowRight, X } from "lucide-react";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
+import { useOverlay } from "@/components/layout/use-overlay";
 import type { Product } from "@/types/product";
 import { ProductGallery } from "./product-gallery";
 import { ProductInfo } from "./product-info";
@@ -10,16 +11,7 @@ import { ProductInfo } from "./product-info";
 export function ProductQuickView({ product, onClose }: { product: Product; onClose: () => void }) {
   const dialogRef = useRef<HTMLDialogElement>(null);
 
-  useEffect(() => {
-    const dialog = dialogRef.current;
-    const previousOverflow = document.body.style.overflow;
-    dialog?.showModal();
-    document.body.style.overflow = "hidden";
-    return () => {
-      dialog?.close();
-      document.body.style.overflow = previousOverflow;
-    };
-  }, []);
+  useOverlay(dialogRef, true, onClose);
 
   return (
     <dialog ref={dialogRef} aria-label={`${product.name} quick view`} onCancel={onClose} onClick={(event) => { if (event.target === event.currentTarget) onClose(); }} className="fixed inset-0 m-auto h-[90dvh] max-h-[900px] w-[calc(100%-24px)] max-w-[1200px] overflow-hidden rounded-lg bg-white p-0 text-[#1D1D1F] shadow-2xl backdrop:bg-black/40 backdrop:backdrop-blur-sm">

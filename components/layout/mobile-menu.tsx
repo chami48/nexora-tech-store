@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { AnimatePresence, motion } from "motion/react";
 import { ArrowUpRight, X } from "lucide-react";
-import { useEffect } from "react";
+import { useRef } from "react";
+import { useOverlay } from "./use-overlay";
 
 interface MobileMenuProps {
   open: boolean;
@@ -49,27 +50,8 @@ export function MobileMenu({
   open,
   onClose,
 }: MobileMenuProps) {
-  useEffect(() => {
-    if (!open) {
-      document.body.style.overflow = "";
-      return;
-    }
-
-    document.body.style.overflow = "hidden";
-
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        onClose();
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-
-    return () => {
-      document.body.style.overflow = "";
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [open, onClose]);
+  const panelRef = useRef<HTMLElement>(null);
+  useOverlay(panelRef, open, onClose);
 
   return (
     <AnimatePresence>
@@ -91,6 +73,8 @@ export function MobileMenu({
           />
 
           <motion.aside
+            ref={panelRef}
+            tabIndex={-1}
             role="dialog"
             aria-modal="true"
             aria-label="Mobile navigation"
